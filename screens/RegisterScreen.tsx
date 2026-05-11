@@ -47,7 +47,7 @@ export default function RegisterScreen({ navigation }: any) {
     <View style={styles.container}>
 
       <Text style={styles.title}>
-        REGISTRO
+        Registrar usuario
       </Text>
 
       <TextInput

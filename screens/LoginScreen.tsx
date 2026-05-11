@@ -50,7 +50,7 @@ export default function LoginScreen({ navigation }: any) {
     <View style={styles.container}>
 
       <Text style={styles.title}>
-        LOGIN
+        Iniciar sesión
       </Text>
 
       <TextInput

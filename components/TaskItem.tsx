@@ -3,7 +3,7 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
 } from 'react-native';
 
 import { styles } from '../styles/styles';
@@ -14,12 +14,19 @@ export default function TaskItem({ item, onDelete }: any) {
 
     <View style={styles.taskCard}>
 
-      <Text style={styles.taskText}>
-        {item}
+      <Text style={styles.taskTitle}>
+        {item.title}
       </Text>
 
-      <TouchableOpacity
-        style={styles.deleteButton}
+      <Text style={styles.taskDate}>
+        {item.date}
+      </Text>
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.deleteButton,
+          pressed && styles.deleteButtonPressed,
+        ]}
         onPress={onDelete}
       >
 
@@ -27,7 +34,7 @@ export default function TaskItem({ item, onDelete }: any) {
           Eliminar
         </Text>
 
-      </TouchableOpacity>
+      </Pressable>
 
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import {
   View,
@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,13 +17,7 @@ import { styles } from '../styles/styles';
 
 export default function HomeScreen({ navigation }: any) {
 
-  const [tasks, setTasks] = useState<string[]>([]);
-
-  useEffect(() => {
-
-    loadTasks();
-
-  }, []);
+  const [tasks, setTasks] = useState<{ title: string; date: string }[]>([]);
 
   const loadTasks = async () => {
 
@@ -32,8 +28,20 @@ export default function HomeScreen({ navigation }: any) {
 
       setTasks(JSON.parse(savedTasks));
 
+    } else {
+
+      setTasks([]);
+
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+
+      loadTasks();
+
+    }, [])
+  );
 
   const deleteTask = async (index: number) => {
 
@@ -54,7 +62,7 @@ export default function HomeScreen({ navigation }: any) {
     <View style={styles.container}>
 
       <Text style={styles.title}>
-        MIS TAREAS
+        Mis Tareas
       </Text>
 
       <TouchableOpacity
