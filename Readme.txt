@@ -62,9 +62,11 @@ bash
 git clone https://github.com/lucioaranda/TP
 
 Instalar dependencias
-
+bash
 npm install
 
 Ejecutar aplicacion
-
+bash
 npx expo run:android
+
+Link Youtube: https://www.youtube.com/shorts/P_Df3ECUpdI
