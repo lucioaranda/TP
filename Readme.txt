@@ -1,11 +1,11 @@
-# App de Gestión de Tareas - React Native Expo
+ App de Gestión de Tareas - React Native Expo
 
-## Alumno
+Alumno
 Lucio Aranda
 
----
 
-# Opción elegida
+
+ Opción elegida
 
 Aplicación mobile de gestión de tareas desarrollada con React Native y Expo.
 
@@ -16,9 +16,9 @@ La aplicación permite:
 - Eliminación de tareas
 - Recordatorios mediante notificaciones locales
 
----
 
-# Tecnologías utilizadas
+
+ Tecnologías utilizadas
 
 - React Native
 - Expo
@@ -27,38 +27,44 @@ La aplicación permite:
 - Expo Notifications
 - React Navigation
 
----
 
-# Funcionalidades implementadas
 
-## Autenticación
+ Funcionalidades implementadas
+
+Autenticación
 - Registro de usuario
 - Inicio de sesión validando datos almacenados localmente
 
-## Gestión de tareas
+ Gestión de tareas
 - Crear tareas
 - Agregar fecha o recordatorio
 - Visualizar lista de tareas
 - Eliminar tareas
 
-## Persistencia de datos
+Persistencia de datos
 - Uso de AsyncStorage para guardar:
   - Usuario
   - Lista de tareas
 
-## Notificaciones
+ Notificaciones
 - Implementación de notificaciones locales utilizando expo-notifications
 - Recordatorio automático al guardar una tarea
 
-## Navegación
+ Navegación
 - Navegación entre pantallas mediante React Navigation
 - Menú de usuario con opción Log out
 
----
 
-# Cómo ejecutar la app
+Cómo ejecutar la app
 
-## 1. Clonar el repositorio
+ 1. Clonar el repositorio
+bash
+git clone https://github.com/lucioaranda/TP
 
-```bash
-git clone LINK_DEL_REPOSITORIO
+Instalar dependencias
+
+npm install
+
+Ejecutar aplicacion
+
+npx expo run:android
