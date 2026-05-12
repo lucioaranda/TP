@@ -59,7 +59,7 @@ Cómo ejecutar la app
 
  1. Clonar el repositorio
 bash
-git clone https://github.com/lucioaranda/TP
+git clone https://github.com/lucioaranda/TP.git
 
 Instalar dependencias
 bash
