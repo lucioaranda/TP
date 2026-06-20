@@ -12,36 +12,45 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { styles } from '../styles/styles';
 
+type User = {
+  username: string;
+  password: string;
+};
+
 export default function LoginScreen({ navigation }: any) {
 
   const [username, setUsername] = useState<string>('');
-
   const [password, setPassword] = useState<string>('');
 
   const login = async () => {
-
-    const savedUser = await AsyncStorage.getItem('user');
-
-    if (!savedUser) {
-
-      Alert.alert('No existe usuario');
-
+    if (username.trim() === '' || password.trim() === '') {
+      Alert.alert('Completar usuario y contraseña');
       return;
     }
 
-    const user = JSON.parse(savedUser);
+    try {
+      const savedUser = await AsyncStorage.getItem('user');
 
-    if (
-      user.username === username &&
-      user.password === password
-    ) {
+      if (!savedUser) {
+        Alert.alert('No existe usuario registrado');
+        return;
+      }
 
-      navigation.navigate('Home');
+      const user: User = JSON.parse(savedUser);
 
-    } else {
+      if (
+        user.username === username.trim() &&
+        user.password === password
+      ) {
+        await AsyncStorage.setItem('session', 'true');
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Usuario o contraseña incorrectos');
+      }
 
-      Alert.alert('Usuario o contraseña incorrectos');
-
+    } catch (error) {
+      console.log('Error al iniciar sesión:', error);
+      Alert.alert('Error al iniciar sesión');
     }
   };
 
@@ -58,6 +67,7 @@ export default function LoginScreen({ navigation }: any) {
         style={styles.input}
         value={username}
         onChangeText={setUsername}
+        autoCapitalize="none"
       />
 
       <TextInput

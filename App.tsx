@@ -7,10 +7,10 @@ import {
   Modal,
 } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 
 import { NavigationContainer } from '@react-navigation/native';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import LoginScreen from './screens/LoginScreen';
@@ -26,7 +26,7 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
     shouldShowList: true,
-    shouldPlaySound: false,
+    shouldPlaySound: true,
     shouldSetBadge: false,
   }),
 });
@@ -34,7 +34,8 @@ Notifications.setNotificationHandler({
 function UserMenu({ navigation }: any) {
   const [open, setOpen] = useState(false);
 
-  const logout = () => {
+  const logout = async () => {
+    await AsyncStorage.removeItem('session');
     setOpen(false);
     navigation.replace('Login');
   };
@@ -69,9 +70,12 @@ function UserMenu({ navigation }: any) {
 }
 
 export default function App() {
+  const [initialRoute, setInitialRoute] = useState<string | null>(null);
+
   useEffect(() => {
     requestPermissions();
     createNotificationChannel();
+    checkSession();
   }, []);
 
   const requestPermissions = async () => {
@@ -87,9 +91,23 @@ export default function App() {
     });
   };
 
+  const checkSession = async () => {
+    const session = await AsyncStorage.getItem('session');
+
+    if (session === 'true') {
+      setInitialRoute('Home');
+    } else {
+      setInitialRoute('Login');
+    }
+  };
+
+  if (!initialRoute) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen
           name="Login"
           component={LoginScreen}

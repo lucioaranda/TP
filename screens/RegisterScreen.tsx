@@ -12,34 +12,56 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { styles } from '../styles/styles';
 
+type User = {
+  username: string;
+  password: string;
+};
+
 export default function RegisterScreen({ navigation }: any) {
 
   const [username, setUsername] = useState<string>('');
-
   const [password, setPassword] = useState<string>('');
 
   const register = async () => {
-
-    if (username === '' || password === '') {
-
+    if (username.trim() === '' || password.trim() === '') {
       Alert.alert('Completar todos los campos');
-
       return;
     }
 
-    const user = {
-      username,
-      password,
-    };
+    if (password.length < 4) {
+      Alert.alert('La contraseña debe tener al menos 4 caracteres');
+      return;
+    }
 
-    await AsyncStorage.setItem(
-      'user',
-      JSON.stringify(user)
-    );
+    try {
+      const user: User = {
+        username: username.trim(),
+        password,
+      };
 
-    Alert.alert('Usuario registrado');
+      await AsyncStorage.setItem(
+        'user',
+        JSON.stringify(user)
+      );
 
-    navigation.navigate('Login');
+      Alert.alert(
+        'Usuario registrado',
+        'El usuario se registró correctamente',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Login'),
+          },
+        ]
+      );
+
+      setUsername('');
+      setPassword('');
+
+    } catch (error) {
+      console.log('Error al registrar usuario:', error);
+      Alert.alert('Error al registrar usuario');
+    }
   };
 
   return (
@@ -55,6 +77,7 @@ export default function RegisterScreen({ navigation }: any) {
         style={styles.input}
         value={username}
         onChangeText={setUsername}
+        autoCapitalize="none"
       />
 
       <TextInput
