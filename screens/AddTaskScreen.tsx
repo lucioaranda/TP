@@ -15,6 +15,7 @@ import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import * as Contacts from 'expo-contacts';
 
 import { styles } from '../styles/styles';
 
@@ -22,6 +23,7 @@ import {
   requestCameraPermission,
   requestGalleryPermission,
   requestLocationPermission,
+  requestContactsPermission,
 } from '../utils/Permissions';
 
 type Task = {
@@ -34,6 +36,11 @@ type Task = {
     latitude: number;
     longitude: number;
   };
+  responsible?: {
+    name: string;
+    phone?: string;
+    email?: string;
+  };
 };
 
 export default function AddTaskScreen({ navigation }: any) {
@@ -45,6 +52,11 @@ export default function AddTaskScreen({ navigation }: any) {
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
+  } | null>(null);
+  const [responsible, setResponsible] = useState<{
+    name: string;
+    phone?: string;
+    email?: string;
   } | null>(null);
 
   const openDatePicker = () => {
@@ -109,32 +121,72 @@ export default function AddTaskScreen({ navigation }: any) {
     }
   };
 
-const getCurrentLocation = async () => {
-  const permission = await requestLocationPermission();
+  const getCurrentLocation = async () => {
+    const permission = await requestLocationPermission();
 
-  if (permission !== 'concedido') {
-    return;
-  }
+    if (permission !== 'concedido') {
+      return;
+    }
 
-  try {
-    const currentLocation = {
-      coords: {
-        latitude: -34.6037,
-        longitude: -58.3816,
-      },
-    };
+    try {
+      const currentLocation = {
+        coords: {
+          latitude: -34.6037,
+          longitude: -58.3816,
+        },
+      };
 
-    setLocation({
-      latitude: currentLocation.coords.latitude,
-      longitude: currentLocation.coords.longitude,
-    });
+      setLocation({
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      });
 
-    Alert.alert('Ubicación agregada');
-  } catch (error) {
-    console.log('Error al obtener ubicación:', error);
-    Alert.alert('No se pudo obtener la ubicación actual');
-  }
-};
+      Alert.alert('Ubicación agregada');
+    } catch (error) {
+      console.log('Error al obtener ubicación:', error);
+      Alert.alert('No se pudo obtener la ubicación actual');
+    }
+  };
+
+  const selectResponsible = async () => {
+    const permission = await requestContactsPermission();
+
+    if (permission !== 'concedido') {
+      return;
+    }
+
+    try {
+      const { data } = await Contacts.getContactsAsync({
+        fields: [
+          Contacts.Fields.PhoneNumbers,
+          Contacts.Fields.Emails,
+        ],
+      });
+
+      if (data.length === 0) {
+        Alert.alert('No hay contactos disponibles');
+        return;
+      }
+
+      const firstContact = data[0];
+
+      setResponsible({
+        name: firstContact.name,
+        phone: firstContact.phoneNumbers?.[0]?.number,
+        email: firstContact.emails?.[0]?.email,
+      });
+
+      Alert.alert(
+        'Responsable seleccionado',
+        firstContact.name
+      );
+
+    } catch (error) {
+      console.log('Error al obtener contactos:', error);
+      Alert.alert('No se pudo obtener la lista de contactos');
+    }
+  };
+
   const saveTask = async () => {
     if (task.trim() === '') {
       Alert.alert('Escribir una tarea');
@@ -184,6 +236,7 @@ const getCurrentLocation = async () => {
         notificationId,
         imageUri: imageUri || undefined,
         location: location || undefined,
+        responsible: responsible || undefined,
       };
 
       tasks.push(newTask);
@@ -208,6 +261,7 @@ const getCurrentLocation = async () => {
       setDate(null);
       setImageUri(null);
       setLocation(null);
+      setResponsible(null);
 
     } catch (error) {
       console.log('Error al guardar tarea:', error);
@@ -245,6 +299,17 @@ const getCurrentLocation = async () => {
           onChangeText={setTask}
         />
       </View>
+
+      <TouchableOpacity
+        style={styles.contactButton}
+        onPress={selectResponsible}
+      >
+        <Text style={styles.contactButtonText}>
+          {responsible
+            ? `Responsable: ${responsible.name}`
+            : 'Seleccionar responsable'}
+        </Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.locationButton}

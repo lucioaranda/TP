@@ -65,6 +65,12 @@ export default function TaskItem({
           <Text style={styles.taskDate}>
             {item.date}
           </Text>
+
+          {item.responsible && (
+            <Text style={styles.taskResponsible}>
+              👤 Responsable: {item.responsible.name}
+            </Text>
+          )}
         </View>
       </View>
 

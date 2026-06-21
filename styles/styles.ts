@@ -272,5 +272,27 @@ export const styles = StyleSheet.create({
     color: '#1E3A8A',
     fontWeight: '600',
   },
+  
+  contactButton: {
+  borderWidth: 1,
+  borderColor: '#047857',
+  padding: 12,
+  borderRadius: 8,
+  marginBottom: 10,
+  backgroundColor: '#ECFDF5',
+},
+
+contactButtonText: {
+  color: '#047857',
+  textAlign: 'center',
+  fontWeight: 'bold',
+},
+
+taskResponsible: {
+  fontSize: 14,
+  color: '#047857',
+  marginTop: 5,
+  fontWeight: '600',
+},
 
 });
