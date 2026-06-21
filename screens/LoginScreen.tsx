@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SimpleButton from '../components/SimpleButton';
 
 import { styles } from '../styles/styles';
 
@@ -78,16 +79,12 @@ export default function LoginScreen({ navigation }: any) {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity
-        style={styles.button}
+      <SimpleButton
+        title="Ingresar"
         onPress={login}
-      >
-
-        <Text style={styles.buttonText}>
-          Ingresar
-        </Text>
-
-      </TouchableOpacity>
+        buttonStyle={styles.button}
+        textStyle={styles.buttonText}
+      />
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Register')}

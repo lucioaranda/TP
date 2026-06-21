@@ -8,16 +8,18 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  Modal,
+  FlatList,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
-import * as Location from 'expo-location';
 import * as Contacts from 'expo-contacts';
 
 import { styles } from '../styles/styles';
+import SimpleButton from '../components/SimpleButton';
 
 import {
   requestCameraPermission,
@@ -25,6 +27,12 @@ import {
   requestLocationPermission,
   requestContactsPermission,
 } from '../utils/Permissions';
+
+type Responsible = {
+  name: string;
+  phone?: string;
+  email?: string;
+};
 
 type Task = {
   id: string;
@@ -36,11 +44,7 @@ type Task = {
     latitude: number;
     longitude: number;
   };
-  responsible?: {
-    name: string;
-    phone?: string;
-    email?: string;
-  };
+  responsible?: Responsible;
 };
 
 export default function AddTaskScreen({ navigation }: any) {
@@ -53,15 +57,56 @@ export default function AddTaskScreen({ navigation }: any) {
     latitude: number;
     longitude: number;
   } | null>(null);
-  const [responsible, setResponsible] = useState<{
-    name: string;
-    phone?: string;
-    email?: string;
-  } | null>(null);
+
+  const [responsible, setResponsible] = useState<Responsible | null>(null);
+  const [contacts, setContacts] = useState<Responsible[]>([]);
+  const [contactsModalVisible, setContactsModalVisible] = useState(false);
 
   const openDatePicker = () => {
     setPickerMode('date');
     setShowPicker(true);
+  };
+
+  const selectResponsible = async () => {
+    const permission = await requestContactsPermission();
+
+    if (permission !== 'concedido') {
+      return;
+    }
+
+    try {
+      const { data } = await Contacts.getContactsAsync({
+        fields: [
+          Contacts.Fields.PhoneNumbers,
+          Contacts.Fields.Emails,
+        ],
+      });
+
+      const formattedContacts = data
+        .filter(contact => contact.name)
+        .map(contact => ({
+          name: contact.name,
+          phone: contact.phoneNumbers?.[0]?.number,
+          email: contact.emails?.[0]?.email,
+        }));
+
+      if (formattedContacts.length === 0) {
+        Alert.alert('No hay contactos disponibles');
+        return;
+      }
+
+      setContacts(formattedContacts);
+      setContactsModalVisible(true);
+
+    } catch (error) {
+      console.log('Error al obtener contactos:', error);
+      Alert.alert('No se pudo obtener la lista de contactos');
+    }
+  };
+
+  const chooseResponsible = (contact: Responsible) => {
+    setResponsible(contact);
+    setContactsModalVisible(false);
   };
 
   const selectImageOption = () => {
@@ -145,45 +190,6 @@ export default function AddTaskScreen({ navigation }: any) {
     } catch (error) {
       console.log('Error al obtener ubicación:', error);
       Alert.alert('No se pudo obtener la ubicación actual');
-    }
-  };
-
-  const selectResponsible = async () => {
-    const permission = await requestContactsPermission();
-
-    if (permission !== 'concedido') {
-      return;
-    }
-
-    try {
-      const { data } = await Contacts.getContactsAsync({
-        fields: [
-          Contacts.Fields.PhoneNumbers,
-          Contacts.Fields.Emails,
-        ],
-      });
-
-      if (data.length === 0) {
-        Alert.alert('No hay contactos disponibles');
-        return;
-      }
-
-      const firstContact = data[0];
-
-      setResponsible({
-        name: firstContact.name,
-        phone: firstContact.phoneNumbers?.[0]?.number,
-        email: firstContact.emails?.[0]?.email,
-      });
-
-      Alert.alert(
-        'Responsable seleccionado',
-        firstContact.name
-      );
-
-    } catch (error) {
-      console.log('Error al obtener contactos:', error);
-      Alert.alert('No se pudo obtener la lista de contactos');
     }
   };
 
@@ -300,27 +306,27 @@ export default function AddTaskScreen({ navigation }: any) {
         />
       </View>
 
-      <TouchableOpacity
-        style={styles.contactButton}
-        onPress={selectResponsible}
-      >
-        <Text style={styles.contactButtonText}>
-          {responsible
+      <SimpleButton
+        title={
+          responsible
             ? `Responsable: ${responsible.name}`
-            : 'Seleccionar responsable'}
-        </Text>
-      </TouchableOpacity>
+            : 'Seleccionar responsable'
+        }
+        onPress={selectResponsible}
+        buttonStyle={styles.contactButton}
+        textStyle={styles.contactButtonText}
+      />
 
-      <TouchableOpacity
-        style={styles.locationButton}
-        onPress={getCurrentLocation}
-      >
-        <Text style={styles.locationButtonText}>
-          {location
+      <SimpleButton
+        title={
+          location
             ? 'Ubicación agregada'
-            : 'Agregar ubicación actual'}
-        </Text>
-      </TouchableOpacity>
+            : 'Agregar ubicación actual'
+        }
+        onPress={getCurrentLocation}
+        buttonStyle={styles.locationButton}
+        textStyle={styles.locationButtonText}
+      />
 
       <TouchableOpacity
         style={styles.datePickerButton}
@@ -361,19 +367,12 @@ export default function AddTaskScreen({ navigation }: any) {
               }, 300);
 
             } else {
-
               const selectedDay = date || new Date();
 
               const finalDate = new Date(selectedDay);
 
-              finalDate.setHours(
-                selectedDate.getHours()
-              );
-
-              finalDate.setMinutes(
-                selectedDate.getMinutes()
-              );
-
+              finalDate.setHours(selectedDate.getHours());
+              finalDate.setMinutes(selectedDate.getMinutes());
               finalDate.setSeconds(0);
               finalDate.setMilliseconds(0);
 
@@ -383,14 +382,63 @@ export default function AddTaskScreen({ navigation }: any) {
         />
       )}
 
-      <TouchableOpacity
-        style={styles.button}
+      <SimpleButton
+        title="Guardar"
         onPress={saveTask}
+        buttonStyle={styles.button}
+        textStyle={styles.buttonText}
+      />
+
+      <Modal
+        visible={contactsModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setContactsModalVisible(false)}
       >
-        <Text style={styles.buttonText}>
-          Guardar
-        </Text>
-      </TouchableOpacity>
+        <View style={styles.contactModalBackground}>
+          <View style={styles.contactModalBox}>
+            <Text style={styles.contactModalTitle}>
+              Seleccionar responsable
+            </Text>
+
+            <FlatList
+              data={contacts}
+              keyExtractor={(item, index) =>
+                `${item.name}-${index}`
+              }
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.contactItem}
+                  onPress={() => chooseResponsible(item)}
+                >
+                  <Text style={styles.contactName}>
+                    {item.name}
+                  </Text>
+
+                  {item.phone && (
+                    <Text style={styles.contactDetail}>
+                      {item.phone}
+                    </Text>
+                  )}
+
+                  {item.email && (
+                    <Text style={styles.contactDetail}>
+                      {item.email}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+
+            <SimpleButton
+              title="Cerrar"
+              onPress={() => setContactsModalVisible(false)}
+              buttonStyle={styles.button}
+              textStyle={styles.buttonText}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

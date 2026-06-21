@@ -294,5 +294,47 @@ taskResponsible: {
   marginTop: 5,
   fontWeight: '600',
 },
+contactModalBackground: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  justifyContent: 'flex-end',
+},
+
+contactModalBox: {
+  backgroundColor: '#FFFFFF',
+  borderTopLeftRadius: 20,
+  borderTopRightRadius: 20,
+  padding: 20,
+  maxHeight: '70%',
+},
+
+contactModalTitle: {
+  fontSize: 20,
+  fontWeight: 'bold',
+  color: '#111827',
+  textAlign: 'center',
+  marginBottom: 15,
+},
+
+contactItem: {
+  backgroundColor: '#ECFDF5',
+  borderWidth: 1,
+  borderColor: '#A7F3D0',
+  borderRadius: 10,
+  padding: 12,
+  marginBottom: 10,
+},
+
+contactName: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#047857',
+},
+
+contactDetail: {
+  fontSize: 13,
+  color: '#065F46',
+  marginTop: 3,
+},
 
 });

@@ -14,6 +14,7 @@ import * as Notifications from 'expo-notifications';
 import * as ImagePicker from 'expo-image-picker';
 
 import TaskItem from '../components/TaskItem';
+import SimpleButton from '../components/SimpleButton';
 
 import { styles } from '../styles/styles';
 
@@ -163,14 +164,12 @@ export default function HomeScreen({ navigation }: any) {
         Mis Tareas
       </Text>
 
-      <TouchableOpacity
-        style={styles.button}
+      <SimpleButton
+        title="Agregar tarea"
         onPress={() => navigation.navigate('AddTask')}
-      >
-        <Text style={styles.buttonText}>
-          Agregar tarea
-        </Text>
-      </TouchableOpacity>
+        buttonStyle={styles.button}
+        textStyle={styles.buttonText}
+      />
 
       <FlatList
         data={tasks}
