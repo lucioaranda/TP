@@ -1,18 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import {
   View,
   Text,
-  TouchableOpacity,
   FlatList,
   Alert,
 } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import * as ImagePicker from 'expo-image-picker';
 
+import TestButton from '../components/TestButton';
 import TaskItem from '../components/TaskItem';
 import SimpleButton from '../components/SimpleButton';
 
@@ -23,46 +22,21 @@ import {
   requestGalleryPermission,
 } from '../utils/Permissions';
 
-type Task = {
-  id: string;
-  title: string;
-  date: string;
-  notificationId: string;
-  imageUri?: string;
-  location?: {
-  latitude: number;
-  longitude: number;
-};
-};
+import { useTaskStore } from '../store/taskStore';
 
 export default function HomeScreen({ navigation }: any) {
-
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  const loadTasks = async () => {
-    const savedTasks = await AsyncStorage.getItem('tasks');
-
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    } else {
-      setTasks([]);
-    }
-  };
+  const tasks = useTaskStore(state => state.tasks);
+  const loadTasks = useTaskStore(state => state.loadTasks);
+  const deleteTaskFromStore = useTaskStore(state => state.deleteTask);
+  const updateTaskImageInStore = useTaskStore(
+    state => state.updateTaskImage
+  );
 
   useFocusEffect(
     useCallback(() => {
       loadTasks();
-    }, [])
+    }, [loadTasks])
   );
-
-  const saveTasks = async (newTasks: Task[]) => {
-    setTasks(newTasks);
-
-    await AsyncStorage.setItem(
-      'tasks',
-      JSON.stringify(newTasks)
-    );
-  };
 
   const deleteTask = async (taskId: string) => {
     const taskToDelete = tasks.find(
@@ -75,32 +49,14 @@ export default function HomeScreen({ navigation }: any) {
       );
     }
 
-    const newTasks = tasks.filter(
-      item => item.id !== taskId
-    );
-
-    await saveTasks(newTasks);
+    await deleteTaskFromStore(taskId);
   };
 
-  const selectImageOption = (taskId: string) => {
-    Alert.alert(
-      'Agregar imagen',
-      'Seleccioná una opción',
-      [
-        {
-          text: 'Tomar foto',
-          onPress: () => openCamera(taskId),
-        },
-        {
-          text: 'Elegir de galería',
-          onPress: () => openGallery(taskId),
-        },
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-      ]
-    );
+  const updateTaskImage = async (
+    taskId: string,
+    imageUri: string
+  ) => {
+    await updateTaskImageInStore(taskId, imageUri);
   };
 
   const openCamera = async (taskId: string) => {
@@ -139,27 +95,29 @@ export default function HomeScreen({ navigation }: any) {
     }
   };
 
-  const updateTaskImage = async (
-    taskId: string,
-    imageUri: string
-  ) => {
-    const newTasks = tasks.map(task => {
-      if (task.id === taskId) {
-        return {
-          ...task,
-          imageUri,
-        };
-      }
-
-      return task;
-    });
-
-    await saveTasks(newTasks);
+  const selectImageOption = (taskId: string) => {
+    Alert.alert(
+      'Agregar imagen',
+      'Seleccioná una opción',
+      [
+        {
+          text: 'Tomar foto',
+          onPress: () => openCamera(taskId),
+        },
+        {
+          text: 'Elegir de galería',
+          onPress: () => openGallery(taskId),
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+      ]
+    );
   };
 
   return (
     <View style={styles.container}>
-
       <Text style={styles.title}>
         Mis Tareas
       </Text>
@@ -169,6 +127,11 @@ export default function HomeScreen({ navigation }: any) {
         onPress={() => navigation.navigate('AddTask')}
         buttonStyle={styles.button}
         textStyle={styles.buttonText}
+      />
+
+      <TestButton
+        title="Prueba"
+        onPress={() => console.log('Prueba')}
       />
 
       <FlatList
@@ -185,7 +148,6 @@ export default function HomeScreen({ navigation }: any) {
           />
         )}
       />
-
     </View>
   );
 }

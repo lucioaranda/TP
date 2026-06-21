@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {
-  Pressable,
   Text,
+  TouchableOpacity,
 } from 'react-native';
 
 export default function SimpleButton({
@@ -12,13 +12,14 @@ export default function SimpleButton({
   textStyle,
 }: any) {
   return (
-    <Pressable
+    <TouchableOpacity
       style={buttonStyle}
       onPress={onPress}
+      activeOpacity={0.7}
     >
       <Text style={textStyle}>
         {title}
       </Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }

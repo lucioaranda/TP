@@ -12,11 +12,12 @@ import {
   FlatList,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Contacts from 'expo-contacts';
+
+import { useTaskStore, Task, Responsible } from '../store/taskStore';
 
 import { styles } from '../styles/styles';
 import SimpleButton from '../components/SimpleButton';
@@ -27,25 +28,6 @@ import {
   requestLocationPermission,
   requestContactsPermission,
 } from '../utils/Permissions';
-
-type Responsible = {
-  name: string;
-  phone?: string;
-  email?: string;
-};
-
-type Task = {
-  id: string;
-  title: string;
-  date: string;
-  notificationId: string;
-  imageUri?: string;
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
-  responsible?: Responsible;
-};
 
 export default function AddTaskScreen({ navigation }: any) {
   const [task, setTask] = useState<string>('');
@@ -61,6 +43,8 @@ export default function AddTaskScreen({ navigation }: any) {
   const [responsible, setResponsible] = useState<Responsible | null>(null);
   const [contacts, setContacts] = useState<Responsible[]>([]);
   const [contactsModalVisible, setContactsModalVisible] = useState(false);
+
+  const addTask = useTaskStore(state => state.addTask);
 
   const openDatePicker = () => {
     setPickerMode('date');
@@ -214,14 +198,6 @@ export default function AddTaskScreen({ navigation }: any) {
     }
 
     try {
-      const savedTasks = await AsyncStorage.getItem('tasks');
-
-      let tasks: Task[] = [];
-
-      if (savedTasks) {
-        tasks = JSON.parse(savedTasks);
-      }
-
       const notificationId =
         await Notifications.scheduleNotificationAsync({
           content: {
@@ -245,12 +221,7 @@ export default function AddTaskScreen({ navigation }: any) {
         responsible: responsible || undefined,
       };
 
-      tasks.push(newTask);
-
-      await AsyncStorage.setItem(
-        'tasks',
-        JSON.stringify(tasks)
-      );
+      await addTask(newTask);
 
       Alert.alert(
         'Tarea guardada',
