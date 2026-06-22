@@ -1,22 +1,24 @@
 import React from 'react';
 
 import {
-  Pressable,
+  TouchableOpacity,
   Text,
 } from 'react-native';
 
-type Props = {
-  title: string;
-  onPress: () => void;
-};
+import { styles } from '../styles/styles';
 
 export default function TestButton({
   title,
   onPress,
-}: Props) {
+}: any) {
   return (
-    <Pressable onPress={onPress}>
-      <Text>{title}</Text>
-    </Pressable>
+    <TouchableOpacity
+      style={styles.headerTestButton}
+      onPress={onPress}
+    >
+      <Text style={styles.headerTestButtonText}>
+        {title}
+      </Text>
+    </TouchableOpacity>
   );
 }

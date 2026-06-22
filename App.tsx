@@ -69,6 +69,59 @@ function UserMenu({ navigation }: any) {
   );
 }
 
+function HelpButton() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <TouchableOpacity
+        style={styles.headerHelpButton}
+        onPress={() => setOpen(true)}
+      >
+        <Text style={styles.headerHelpButtonText}>
+          Ayuda
+        </Text>
+      </TouchableOpacity>
+
+      <Modal
+        visible={open}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setOpen(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalBackground}
+          activeOpacity={1}
+          onPress={() => setOpen(false)}
+        >
+          <View style={styles.helpBox}>
+            <Text style={styles.helpTitle}>
+              Soporte
+            </Text>
+
+            <Text style={styles.helpText}>
+              Para obtener ayuda comuníquese con el mail de soporte:
+            </Text>
+
+            <Text style={styles.helpMail}>
+              Soporte@gmail.com
+            </Text>
+
+            <TouchableOpacity
+              style={styles.helpCloseButton}
+              onPress={() => setOpen(false)}
+            >
+              <Text style={styles.helpCloseButtonText}>
+                Cerrar
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </>
+  );
+}
+
 export default function App() {
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
@@ -131,9 +184,15 @@ export default function App() {
           component={HomeScreen}
           options={({ navigation }) => ({
             title: 'TAREAS',
+
             headerLeft: () => (
               <UserMenu navigation={navigation} />
             ),
+
+            headerRight: () => (
+              <HelpButton />
+            ),
+
             headerTitleAlign: 'center',
             headerTitleStyle: styles.headerTitleStyle,
           })}

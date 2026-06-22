@@ -273,27 +273,28 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
   
-  contactButton: {
+contactButton: {
   borderWidth: 1,
-  borderColor: '#047857',
+  borderColor: '#1E3A8A',
   padding: 12,
   borderRadius: 8,
   marginBottom: 10,
-  backgroundColor: '#ECFDF5',
+  backgroundColor: '#EFF6FF',
 },
 
 contactButtonText: {
-  color: '#047857',
+  color: '#1E3A8A',
   textAlign: 'center',
   fontWeight: 'bold',
 },
 
 taskResponsible: {
   fontSize: 14,
-  color: '#047857',
+  color: '#1E3A8A',
   marginTop: 5,
   fontWeight: '600',
 },
+
 contactModalBackground: {
   flex: 1,
   backgroundColor: 'rgba(0,0,0,0.3)',
@@ -311,15 +312,15 @@ contactModalBox: {
 contactModalTitle: {
   fontSize: 20,
   fontWeight: 'bold',
-  color: '#111827',
+  color: '#1E3A8A',
   textAlign: 'center',
   marginBottom: 15,
 },
 
 contactItem: {
-  backgroundColor: '#ECFDF5',
+  backgroundColor: '#EFF6FF',
   borderWidth: 1,
-  borderColor: '#A7F3D0',
+  borderColor: '#BFDBFE',
   borderRadius: 10,
   padding: 12,
   marginBottom: 10,
@@ -328,13 +329,79 @@ contactItem: {
 contactName: {
   fontSize: 16,
   fontWeight: 'bold',
-  color: '#047857',
+  color: '#1E3A8A',
 },
 
 contactDetail: {
   fontSize: 13,
-  color: '#065F46',
+  color: '#2563EB',
   marginTop: 3,
 },
 
+headerTestButton: {
+  backgroundColor: '#2563EB',
+  paddingHorizontal: 10,
+  paddingVertical: 6,
+  borderRadius: 6,
+  marginRight: 10,
+},
+
+headerTestButtonText: {
+  color: '#FFFFFF',
+  fontSize: 12,
+  fontWeight: 'bold',
+},
+headerHelpButton: {
+  backgroundColor: '#2563EB',
+  paddingHorizontal: 10,
+  paddingVertical: 6,
+  borderRadius: 6,
+  marginRight: 10,
+},
+
+headerHelpButtonText: {
+  color: '#FFFFFF',
+  fontSize: 12,
+  fontWeight: 'bold',
+},
+
+helpBox: {
+  backgroundColor: '#FFFFFF',
+  marginHorizontal: 30,
+  marginTop: '50%',
+  padding: 20,
+  borderRadius: 12,
+  alignItems: 'center',
+},
+
+helpTitle: {
+  fontSize: 20,
+  fontWeight: 'bold',
+  marginBottom: 15,
+},
+
+helpText: {
+  fontSize: 16,
+  textAlign: 'center',
+  marginBottom: 10,
+},
+
+helpMail: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#2563EB',
+  marginBottom: 20,
+},
+
+helpCloseButton: {
+  backgroundColor: '#2563EB',
+  paddingHorizontal: 20,
+  paddingVertical: 10,
+  borderRadius: 8,
+},
+
+helpCloseButtonText: {
+  color: '#FFFFFF',
+  fontWeight: 'bold',
+},
 });

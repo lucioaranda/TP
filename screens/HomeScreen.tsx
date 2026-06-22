@@ -11,7 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
 import * as ImagePicker from 'expo-image-picker';
 
-import TestButton from '../components/TestButton';
+
 import TaskItem from '../components/TaskItem';
 import SimpleButton from '../components/SimpleButton';
 
@@ -26,16 +26,15 @@ import { useTaskStore } from '../store/taskStore';
 
 export default function HomeScreen({ navigation }: any) {
   const tasks = useTaskStore(state => state.tasks);
-  const loadTasks = useTaskStore(state => state.loadTasks);
-  const deleteTaskFromStore = useTaskStore(state => state.deleteTask);
-  const updateTaskImageInStore = useTaskStore(
-    state => state.updateTaskImage
-  );
+
+  const loadTasks = useTaskStore.getState().loadTasks;
+  const deleteTaskFromStore = useTaskStore.getState().deleteTask;
+  const updateTaskImageInStore = useTaskStore.getState().updateTaskImage;
 
   useFocusEffect(
     useCallback(() => {
       loadTasks();
-    }, [loadTasks])
+    }, [])
   );
 
   const deleteTask = async (taskId: string) => {
@@ -73,7 +72,7 @@ export default function HomeScreen({ navigation }: any) {
     });
 
     if (!result.canceled) {
-      updateTaskImage(taskId, result.assets[0].uri);
+      await updateTaskImage(taskId, result.assets[0].uri);
     }
   };
 
@@ -91,7 +90,7 @@ export default function HomeScreen({ navigation }: any) {
     });
 
     if (!result.canceled) {
-      updateTaskImage(taskId, result.assets[0].uri);
+      await updateTaskImage(taskId, result.assets[0].uri);
     }
   };
 
@@ -127,11 +126,6 @@ export default function HomeScreen({ navigation }: any) {
         onPress={() => navigation.navigate('AddTask')}
         buttonStyle={styles.button}
         textStyle={styles.buttonText}
-      />
-
-      <TestButton
-        title="Prueba"
-        onPress={() => console.log('Prueba')}
       />
 
       <FlatList
