@@ -351,19 +351,6 @@ headerTestButtonText: {
   fontSize: 12,
   fontWeight: 'bold',
 },
-headerHelpButton: {
-  backgroundColor: '#2563EB',
-  paddingHorizontal: 10,
-  paddingVertical: 6,
-  borderRadius: 6,
-  marginRight: 10,
-},
-
-headerHelpButtonText: {
-  color: '#FFFFFF',
-  fontSize: 12,
-  fontWeight: 'bold',
-},
 
 helpBox: {
   backgroundColor: '#FFFFFF',

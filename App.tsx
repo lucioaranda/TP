@@ -12,6 +12,7 @@ import * as Notifications from 'expo-notifications';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import TestButton from './components/TestButton';
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -74,14 +75,10 @@ function HelpButton() {
 
   return (
     <>
-      <TouchableOpacity
-        style={styles.headerHelpButton}
-        onPress={() => setOpen(true)}
-      >
-        <Text style={styles.headerHelpButtonText}>
-          Ayuda
-        </Text>
-      </TouchableOpacity>
+      <TestButton
+  title="Ayuda"
+  onPress={() => setOpen(true)}
+/>
 
       <Modal
         visible={open}
